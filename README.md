@@ -1,6 +1,5 @@
 # ecr-purger
-Tool for purging ECR repositories
-NOTE: ecr-purger's goal is to delete any image that isn't needed anymore from the repo; it attempts to only delete images
+Tool for purging ECR repositories. NOTE: ecr-purger's goal is to delete any image that isn't needed anymore from the repo; it attempts to only delete images
 that are 1- not in any active taskdef (allowing for rollbacks) and 2- are older than let's say the one deployed in the
 (latest taskdef - n revisions), giving us some "wiggle_room" during the purging process to account for and skip images that are built but not yet deployed. Below are sample configurations.
 ```
