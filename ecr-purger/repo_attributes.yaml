@@ -26,7 +26,6 @@
 # FOR EXAMPLE
 #################
 # builds/<image-name>:
-# meetup-prod-admin-service
 #   slack-channels: ecr-purger-notifs notif-room2
 #   image-age: 30
 #   use-image-age-only: True 

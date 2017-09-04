@@ -24,7 +24,6 @@ that are 1- not in any active taskdef (allowing for rollbacks) and 2- are older 
 FOR EXAMPLE
 #################
 builds/<image-name>:
-meetup-prod-admin-service
   slack-channels: ecr-purger-notifs notif-room2
   image-age: 30
   use-image-age-only: True 
