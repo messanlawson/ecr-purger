@@ -34,7 +34,7 @@ builds/<image-name>:
 #############################################################################
 ```
 # Deploy
-This can be deployed as a docker container in ECS.
+This can be deployed as a docker container in ECS per general ecs deployment steps.
 
 ## General steps to deploy this as a lambda 
 
