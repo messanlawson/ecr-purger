@@ -1,0 +1,72 @@
+################################################################################################################################################
+# Config file for specifying ECR repository names and respective attributes
+# Multiple entries - i.e. for slack_channels - should be space separated 
+
+# NOTE: ecr-purger's goal is to delete any image that isn't needed anymore from the repo; our build system continuously 
+# pushes images (used for both QA and Prod deployments) that can sit undeployed in the repo for some time i.e. during 
+# QA/testing or before a production deployment is triggered; so for this reason we need to make sure to only delete images
+# that are 1- not in any live taskdef (allowing us to rollback) and 2- are older than let's say the one deployed in the
+#(latest taskdef - n revisions), giving us some "wiggle_room" to account for images that are still being tested in QA or
+# are queued up for deployment.
+##################
+# PARAMETERS
+##################
+# NOTE: both wiggle-room and image-age should be set in a way to account for not deleting freshly built images waiting 
+# to be deployed in Prod or the time images may spend in QA before making it to Prod
+# ecr-purger inspects all active taskdefs in Prod of that family for that image and only purges images that are not used in any
+# of the active taskdefs; this works on a per repo-basis.
+# wiggle-room: (defaults to 20) this is the number of taskdef revisions preceding the latest active one for every taskdef type where this image is used,
+# allowing us to not delete images waiting to be deployed to Prod or being QA'ed; for instance if an image (i.e prod-builds/chapstick) is used accross various
+# services i.e app, api, problast-daemon, switchboard then ecr-purger will inspect the respective old taskdefs (latest taskdef - wiggle-room/n revisions) for these services
+# and collect the imagePushedAt time for each version of this container used accross these old taskdef revisions and use the oldest imagePushedAt time found to determine what
+# is to be deleted (precisely anything older than the oldest imagePushedAt time).
+# image-age: this is simpler (REQUIRES use-image-age-only: True), it is the age of the image in days to use to determine what images to delete; when using 
+# this explicitely set 'use-image-age-only' to 'True'
+# i.e. image-age: 30 means 1- ignore wiggle_room and 2- delete everything in the repo that is not in any active Prod taskdef and is more than 30 days old.
+# in this case 30 days would be the time interval at which stacks using this image in QA should be updated.
+# use-image-age-only: False by default, if True then only use image-age
+# slack-channels: optional list of slack channels for logging what was deleted to Slack, the same info is in the lambda's log by default. 
+##################
+# FOR EXAMPLE
+##################
+# prod-builds/chapstick:
+#   slack-channels: ecr-purger-notifs notif-room2
+#   wiggle-room: 10
+#   image-age: 30
+#   use-image-age-only: True 
+################################################################################################################################################
+
+
+# James images used in active Prod taskdefs will be skipped
+# James images deployed in QA more than 'image-age' days ago will be deleted
+# James in QA should be periodically updated (every 'image-age'/n days)
+prod-builds/james:
+  image-age: 30
+  use-image-age-only: True 
+
+prod-meetup/photo-stager:
+  image-age: 30
+  use-image-age-only: True 
+
+prod-builds/photo-scaler:
+  image-age: 30
+  use-image-age-only: True
+
+prod-builds/apache:
+  image-age: 60
+  use-image-age-only: True
+
+prod-builds/admin:
+  image-age: 60
+  use-image-age-only: True
+
+# delete every image that is not in any active 
+# taskdef that uses prod-builds/chapstick and
+# is more than n days old 
+prod-builds/chapstick:
+  image-age: 60
+  use-image-age-only: True
+
+prod-builds/meetup:
+  image-age: 60
+  use-image-age-only: True

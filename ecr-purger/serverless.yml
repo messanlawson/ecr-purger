@@ -1,0 +1,60 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: ecr-purger
+provider:
+  name: aws
+  runtime: python2.7
+  timeout: 300
+  memorySize: 512
+  stage: prod
+  profile: prod
+  vpc:
+    securityGroupIds:
+      - ${env:securityGroupIds}
+    subnetIds:
+      - ${env:subnetId1}
+      - ${env:subnetId2}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "logs:*"
+        - "ec2:*"
+        - "ecs:*"
+        - "ecr:*"
+      Resource: "*"
+
+    - Effect: "Allow"
+      Action:
+        - "cloudwatch:*"
+        - "sns:*"
+      Resource: "*"
+
+# service wide environment variables here
+  environment:
+    stage: ${self:provider.stage}
+    SLACK_WEBHOOK_URL: ${env:SLACK_WEBHOOK_URL}
+
+
+package:
+  include:
+    - .vendor/**
+
+functions:
+  main:
+    handler: ecr-purger.main
+    events:
+      #- schedule: rate(5 hours)
+      # Run at 12:00 pm (UTC) every day
+      - schedule: cron(0 12 * * ? *)
