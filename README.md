@@ -11,9 +11,7 @@ that are 1- not in any active taskdef (allowing for rollbacks) and 2- are older 
 # ecr-purger inspects all active taskdefs in Prod of that family for that image and only purges images that are not used in any
 # of the active taskdefs; this works on a per repo-basis.
 # wiggle-room: (defaults to 20) this is the number of taskdef revisions preceeding the latest active one for every taskdef type where this image is used, allowing us to not delete images that have been built but not yet deployed 
-# for instance if an image (i.e builds/<image-name>) is used accross various
-# services then ecr-purger will inspect the respective old taskdefs (latest taskdef - wiggle-room/n revisions) for these services
-# and collect the imagePushedAt time for each version of this container used accross these old taskdef revisions and use the oldest imagePushedAt time found to determine what
+# for instance if an image (i.e builds/<image-name>) is used accross various services then ecr-purger will inspect # the respective old taskdefs (latest taskdef - wiggle-room/n revisions) for these services and collect the imagePushedAt time for each version of this container used accross these old taskdef # revisions and use the oldest imagePushedAt time found to determine what
 # is to be deleted (precisely anything older than the oldest imagePushedAt time).
 # image-age: this is simpler (REQUIRES use-image-age-only: True), it is the age of the image in days to use to determine what images to delete; when using 
 # this explicitely set 'use-image-age-only' to 'True'
