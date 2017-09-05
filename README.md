@@ -36,7 +36,7 @@ builds/<image-name>:
 # Deploy
 This can be deployed as a docker container in ECS per general ecs deployment steps.
 
-## General steps to deploy this as a lambda 
+## General steps to deploy this as a lambda function using the serverless framework
 
 - Install Serverless Framework (https://serverless.com/framework/docs/providers/aws/guide/installation/)
 
